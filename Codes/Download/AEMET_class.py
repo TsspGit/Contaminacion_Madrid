@@ -72,12 +72,15 @@ class AEMET_GET:
         DF['presMin'] = DF['presMin'].astype(float) 
         return DF
     
-    def get_stations(self, airports, js_stations):
+    def get_stations(self, airports, js_stations, airp=True):
         data_stations = json.loads(urllib.request.urlopen(js_stations['datos']).read().decode('latin-1'))
         DF_st = pd.DataFrame(data_stations)
         DF_st = DF_st.filter(['indicativo', 'latitud', 'longitud', 'nombre', 'provincia'])
-        airports_position = DF_st['nombre'].str.contains('AEROPUERTO')
-        DF_airst = DF_st[airports_position]
+        if airp:
+            airports_position = DF_st['nombre'].str.contains('AEROPUERTO')
+            DF_airst = DF_st[airports_position]
+        else:
+            DF_airst = DF_st
         def Final_DF(airports=None):
             # inputs a list with the names of the airport's cities
             i = 0
